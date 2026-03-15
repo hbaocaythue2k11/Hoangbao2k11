@@ -1,0 +1,160 @@
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.CoreGui
+ScreenGui.Name = "BaoVN_ShowAcc_Final_NoFruitTrans"
+
+-- 1. NÚT ĐÓNG/MỞ
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Parent = ScreenGui
+ToggleBtn.Size = UDim2.new(0, 55, 0, 55)
+ToggleBtn.Position = UDim2.new(0.02, 0, 0.45, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 180)
+ToggleBtn.Text = "ẨN"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.TextSize = 16
+Instance.new("UICorner", ToggleBtn).CornerRadius = UDim.new(1, 0)
+
+-- 2. KHUNG CHÍNH
+local MainFrame = Instance.new("Frame")
+MainFrame.Parent = ScreenGui
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.Size = UDim2.new(0, 750, 0, 450)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BackgroundTransparency = 0.2
+Instance.new("UICorner", MainFrame)
+
+-- LOGO NINJA
+local Logo = Instance.new("ImageLabel")
+Logo.Parent = MainFrame
+Logo.Size = UDim2.new(0, 70, 0, 70)
+Logo.Position = UDim2.new(0.5, -35, 0, -35)
+Logo.Image = "rbxassetid://6034289544" 
+Logo.BackgroundColor3 = Color3.fromRGB(180, 40, 180)
+Instance.new("UICorner", Logo).CornerRadius = UDim.new(1, 0)
+
+-- 3. TỪ ĐIỂN DỊCH CHỌN LỌC (KHÔNG DỊCH TRÁI)
+local TuDien = {
+    ["Cursed Dual Katana"] = "Song Kiếm Nguyền Rủa (CDK)",
+    ["True Triple Katana"] = "Tam Kiếm Chân Chính (TTK)",
+    ["Hallow Scythe"] = "Lưỡi Hái Bóng Tối",
+    ["Leviathan Heart"] = "Trái Tim Leviathan",
+    ["Dragon Egg"] = "Trứng Rồng",
+    ["Mirror Fractal"] = "Mảnh Vỡ Gương",
+    ["Dark Fragment"] = "Nguyên Thạch Bóng Tối",
+    ["Shark Anchor"] = "Mỏ Neo Cá Mập",
+    ["Dark Dagger"] = "Dao Găm Bóng Tối"
+}
+
+-- DANH SÁCH MÀU ĐỎ
+local DoHiem = {
+    ["Cursed Dual Katana"] = true, 
+    ["True Triple Katana"] = true, 
+    ["Hallow Scythe"] = true,
+    ["Leviathan Heart"] = true, 
+    ["Dragon Egg"] = true, 
+    ["Mirror Fractal"] = true, 
+    ["Dark Fragment"] = true, 
+    ["Nightmare Catcher"] = true,
+    -- Trái hiếm vẫn để màu đỏ nhưng không dịch tên
+    ["Kitsune-Kitsune"] = true, ["Leopard-Leopard"] = true, ["Dragon-Dragon"] = true, ["Spirit-Spirit"] = true, ["Dough-Dough"] = true
+}
+
+-- 4. GIAO DIỆN TAB
+local TabFrame = Instance.new("Frame")
+TabFrame.Parent = MainFrame
+TabFrame.Size = UDim2.new(1, 0, 0, 30)
+TabFrame.Position = UDim2.new(0, 0, 0, 40)
+TabFrame.BackgroundTransparency = 1
+
+local function TaoNutTab(ten, pos)
+    local btn = Instance.new("TextButton")
+    btn.Parent = TabFrame; btn.Size = UDim2.new(0, 100, 1, 0); btn.Position = pos
+    btn.Text = ten; btn.BackgroundColor3 = Color3.fromRGB(180, 40, 180); btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Font = Enum.Font.SourceSansBold; Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 5)
+    return btn
+end
+
+local Tabs = {
+    TaoNutTab("Tất Cả", UDim2.new(0.05, 0, 0, 0)),
+    TaoNutTab("Kiếm", UDim2.new(0.2, 0, 0, 0)),
+    TaoNutTab("Trái", UDim2.new(0.35, 0, 0, 0)),
+    TaoNutTab("Phụ Kiện", UDim2.new(0.5, 0, 0, 0)),
+    TaoNutTab("Nguyên Liệu", UDim2.new(0.65, 0, 0, 0)),
+    TaoNutTab("Súng", UDim2.new(0.8, 0, 0, 0))
+}
+
+-- KHUNG CUỘN
+local Scroll = Instance.new("ScrollingFrame")
+Scroll.Parent = MainFrame; Scroll.Size = UDim2.new(1, -20, 1, -100); Scroll.Position = UDim2.new(0, 10, 0, 80)
+Scroll.BackgroundTransparency = 1; Scroll.ScrollBarThickness = 2; Scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+local UIGrid = Instance.new("UIGridLayout")
+UIGrid.Parent = Scroll; UIGrid.CellSize = UDim2.new(0, 160, 0, 170); UIGrid.CellPadding = UDim2.new(0, 15, 0, 15)
+UIGrid.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- HÀM THÊM VẬT PHẨM
+local function ThemVatPham(tenGoc, loai)
+    local Box = Instance.new("Frame")
+    Box.Parent = Scroll; Box.Name = loai; Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 15)
+    
+    -- Kiểm tra màu đỏ (Mũ Valkyrie Helm không có trong DoHiem nên sẽ là màu Tím)
+    Box.BackgroundColor3 = DoHiem[tenGoc] and Color3.fromRGB(200, 0, 0) or Color3.fromRGB(180, 40, 180)
+
+    local Cat = Instance.new("TextLabel")
+    Cat.Text = loai; Cat.Position = UDim2.new(0, 10, 0, 8); Cat.Size = UDim2.new(1, -10, 0, 20)
+    Cat.BackgroundTransparency = 1; Cat.TextColor3 = Color3.fromRGB(255, 255, 255); Cat.Parent = Box
+
+    local Lab = Instance.new("TextLabel")
+    -- Chỉ dịch các món trong danh sách TuDien, còn lại giữ tên gốc (bao gồm Trái)
+    Lab.Text = TuDien[tenGoc] or tenGoc; 
+    Lab.Size = UDim2.new(1, -10, 0, 110); Lab.Position = UDim2.new(0, 5, 0.5, -45)
+    Lab.TextColor3 = Color3.fromRGB(255, 255, 255); Lab.Font = Enum.Font.SourceSansBold
+    Lab.TextSize = 22; Lab.TextScaled = true; Lab.BackgroundTransparency = 1; Lab.Parent = Box
+end
+
+-- TẢI DỮ LIỆU
+local function TaiDuLieu()
+    for _, v in pairs(Scroll:GetChildren()) do if v:IsA("Frame") then v:Destroy() end end
+    local p = game.Players.LocalPlayer
+    
+    -- Quét túi đồ đeo trên người
+    for _, v in pairs(p.Backpack:GetChildren()) do
+        if v:IsA("Tool") then
+            local l = (v.ToolTip == "Sword" and "Kiếm") or (v.ToolTip == "Gun" and "Súng") or "Vật phẩm"
+            ThemVatPham(v.Name, l)
+        end
+    end
+    
+    -- Quét kho lưu trữ
+    local s, kho = pcall(function() return game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("getInventory") end)
+    if s and type(kho) == "table" then
+        for _, i in pairs(kho) do
+            local l = "Vật phẩm"
+            if i.Type == "Fruit" then l = "Trái" 
+            elseif i.Type == "Wearable" then l = "Phụ Kiện" 
+            elseif i.Type == "Material" then l = "Nguyên Liệu" end
+            
+            if i.Type == "Fruit" or i.Type == "Wearable" or i.Type == "Material" or i.Rarity >= 3 then 
+                ThemVatPham(i.Name, l) 
+            end
+        end
+    end
+end
+
+-- XỬ LÝ NÚT BẤM
+for _, btn in pairs(Tabs) do 
+    btn.MouseButton1Click:Connect(function() 
+        for _, v in pairs(Scroll:GetChildren()) do 
+            if v:IsA("Frame") then 
+                v.Visible = (btn.Text == "Tất Cả" or v.Name == btn.Text) 
+            end 
+        end 
+    end) 
+end
+
+ToggleBtn.MouseButton1Click:Connect(function() 
+    MainFrame.Visible = not MainFrame.Visible
+    ToggleBtn.Text = MainFrame.Visible and "ẨN" or "HIỆN" 
+end)
+
+TaiDuLieu()
